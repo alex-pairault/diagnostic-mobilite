@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 certifi = "2020.11.8"
+pre-commit = "^3.8.0"
 
 
 [build-system]
