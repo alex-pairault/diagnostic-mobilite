@@ -1,9 +1,12 @@
 import math
+import logging
+import mariadb
 
 from data_manager.database_connection.sql_connect import mariadb_connection
 
+logger = logging.getLogger(__name__)
 
-def exists_table(pool, table_name):
+def exists_table(pool: mariadb.ConnectionPool, table_name: str):
     conn = mariadb_connection(pool)
     cur = conn.cursor()
 
@@ -52,7 +55,7 @@ def load_database(pool, table_name, data, cols_table, keys):
     cols_name = "(" + ", ".join([col for col in data.columns]) + ")"
     values_name = "(" + ", ".join(["?" for col in data.columns]) + ")"
 
-    print(f"{table_name} - saving...")
+    logger.info(f"{table_name} - saving...")
     conn = mariadb_connection(pool)
     cur = conn.cursor()
 
@@ -63,7 +66,7 @@ def load_database(pool, table_name, data, cols_table, keys):
 
     conn.commit()
     conn.close()
-    print(f"{table_name} - saved !")
+    logger.info(f"{table_name} - saved !")
 
 
 def load_database_not_many(pool, table_name, data, cols_table, keys):
@@ -73,7 +76,7 @@ def load_database_not_many(pool, table_name, data, cols_table, keys):
     cols_name = "(" + ", ".join([col for col in data.columns]) + ")"
     values_name = "(" + ", ".join(["?" for col in data.columns]) + ")"
 
-    print(f"{table_name} - saving...")
+    logger.info(f"{table_name} - saving...")
     conn = mariadb_connection(pool)
     cur = conn.cursor()
 
@@ -84,23 +87,23 @@ def load_database_not_many(pool, table_name, data, cols_table, keys):
 
     conn.commit()
     conn.close()
-    print(f"{table_name} - saved !")
+    logger.info(f"{table_name} - saved !")
 
 
 def empty_table(pool, table_name):
-    print(f"{table_name} - emptying...")
+    logger.info(f"{table_name} - emptying...")
     conn = mariadb_connection(pool)
     cur = conn.cursor()
     cur.execute("""TRUNCATE TABLE """ + table_name, [])
     conn.commit()
     conn.close()
-    print(f"{table_name} - emptied !")
+    logger.info(f"{table_name} - emptied !")
 
 
 def create_new_table(pool, table_name, cols_table, keys):
     cols_table_request = ", ".join([name + " " + type for name, type in cols_table.items()])
 
-    print(f"{table_name} - creating...")
+    logger.info(f"{table_name} - creating...")
     conn = mariadb_connection(pool)
     cur = conn.cursor()
 
@@ -108,7 +111,7 @@ def create_new_table(pool, table_name, cols_table, keys):
 
     conn.commit()
     conn.close()
-    print(f"{table_name} - created !")
+    logger.info(f"{table_name} - created !")
 
 
 def load_table(pool, table_name, data, cols_table):
@@ -116,7 +119,7 @@ def load_table(pool, table_name, data, cols_table):
     cols_name = "(" + ", ".join([col for col in data.columns]) + ")"
     values_name = "(" + ", ".join(["?" for col in data.columns]) + ")"
 
-    print(f"{table_name} - loading...")
+    logger.info(f"{table_name} - loading...")
     conn = mariadb_connection(pool)
     cur = conn.cursor()
 
@@ -126,11 +129,11 @@ def load_table(pool, table_name, data, cols_table):
 
     conn.commit()
     conn.close()
-    print(f"{table_name} - loaded !")
+    logger.info(f"{table_name} - loaded !")
 
 
 if __name__ == '__main__':
-    print(exists_table(None, "insee_communes"))
-    print(exists_table(None, "table_unknown"))
+    logger.info(exists_table(None, "insee_communes"))
+    logger.info(exists_table(None, "table_unknown"))
 
 
